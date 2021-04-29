@@ -24,7 +24,7 @@ export default {
             ],
           },
         });
-        console.log(existingUser);
+        // console.log(existingUser);
         if (existingUser) {
           throw new Error("This username/email is already taken.");
         }
@@ -33,7 +33,7 @@ export default {
 
         const uglyPassword = await bcrypt.hash(password, 10);
         //비밀번호를 몇번 hash? 10번!
-        return client.user.create({
+        await client.user.create({
           data: {
             username,
             email,
@@ -42,6 +42,9 @@ export default {
             password: uglyPassword,
           },
         });
+        return {
+          ok: true,
+        };
         // 똑같음!!
         // const user = await client.user.create({
         //   data: {
@@ -54,7 +57,10 @@ export default {
         // });
         // return user;
       } catch (e) {
-        return e;
+        return {
+          ok: false,
+          error: "Cant create account.",
+        };
       }
     },
   },

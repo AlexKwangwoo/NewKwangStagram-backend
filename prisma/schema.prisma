@@ -19,6 +19,32 @@ model User {
   password  String
   bio       String?
   avatar    String?
+  photos    Photo[]
+  followers User[]   @relation("FollowRelation", references: [id])
+  following User[]   @relation("FollowRelation", references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Photo {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  // references: [id]는 user의 ID를 가리킨다
+  userId    Int
+  // 데이터베이스에 저장되는건 실제로.. userId 이다!!
+  //그리고 userId는 실제 photo의 주인이될 userId이다
+  file      String
+  caption   String?
+  hashtags  Hashtag[]
+  //헤쉬와 포토는 many to many 관계를 가진다!
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Hashtag {
+  id        Int      @id @default(autoincrement())
+  hashtag   String   @unique
+  photos    Photo[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
