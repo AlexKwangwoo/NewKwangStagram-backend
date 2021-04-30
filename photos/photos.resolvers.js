@@ -22,5 +22,39 @@ export default {
           },
         },
       }),
+    //여기서 id는 photoID이고 userid는 포토주인의 아이디이다
+    likes: ({ id }) => client.like.count({ where: { photoId: id } }),
+    comments: ({ id }) => client.comment.count({ where: { photoId: id } }),
+    isMine: ({ userId }, _, { loggedInUser }) => {
+      if (!loggedInUser) {
+        return false;
+      }
+      return userId === loggedInUser.id;
+    },
+  },
+
+  Hashtag: {
+    //헤시태그 관련 해서 사진을 찾았는데 food관련 사진이 만장이라면?
+    //그래서 포토 자체에서 페이지를 나눠서 주면된다!
+    photos: ({ id }, { page }, { loggedInUser }) => {
+      console.log(page);
+      return client.hashtag
+        .findUnique({
+          where: {
+            id,
+          },
+        })
+        .photos();
+    },
+    totalPhotos: ({ id }) =>
+      client.photo.count({
+        where: {
+          hashtags: {
+            some: {
+              id,
+            },
+          },
+        },
+      }),
   },
 };

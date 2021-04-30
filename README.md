@@ -1,3 +1,25 @@
+중요중요.
+디비 관계를 만들때..
+.1.Photo와 User의 경우 (one to many)
+포토는 userId를 통해 user@relation(fields: [userId], references: [id])와 관계를 짓는다 그러므로 테이블 생성을 하지않는다. 저관계를 통해 유저에서도
+포토를 찾고 포토에서도 유저를 찾는다. (유저가 one이여서) 포토에 userId,user필드 만들어줌 비슷 하게.. like는 하나의 유저와 하나의 포토를 가짐..그래서
+photo Photo @relation(fields: [photoId], references: [id])
+user User @relation(fields: [userId], references: [id]) 이걸 like에 써줌
+(like,photo),(like,user),(comment,photo),(comment,user) 모두다
+one to many관계임
+
+.2.Photo와 Hashtag경우 (many to many)
+포토는 hashtags Hashtag[]
+해쉬테그는 photos Photo[] 해줌 끝
+다만 테이블하나를 생성해.. reference table을 만듬..
+ex) photoId:1 , hashtagId:2
+photoId:1 , hashtagId:4
+photoId:4 , hashtagId:1
+photoId:5 , hashtagId:1
+
+.3.같은 테이블이끼리 참조할때..
+followers User[] @relation("FollowRelation", references: [id])
+
 0.  깃이닛후 리모트시킨뒤 npm init -y 로 프로젝트 만들기!
 
 1.  npm i apollo-server graphql
@@ -229,4 +251,51 @@
     없다!! 그래서 그래프큐엘에서 seeProfile에서 following 하면 나오질 않는다..그래서
     user.resolver에서 followers 와 following을 넣어주거나 seeProfile에서 include를 실행 해줘야 그래프큐엘에서 followers와 following 값을 받을수있다!
 
-41.
+41. hashtag의 photo (필드에서 args 사용할수있음.. 쿼리 뮤테이션 뿐만아니라!)
+    헤시태그 관련 해서 사진을 찾았는데 food관련 사진이 만장이라면?
+    그래서 포토 자체에서 페이지를 나눠서 주면된다!
+
+42. @@unique([photoId, userId]) 이건 두개가 하나의 유니크 키가 된다 보면됨!
+    ex photoId:1 userId:1 => 11, photoId:1 userId:2 => 12
+    그래서 11, 12만 안겹치면 생성된다!
+    const likeWhere = {
+    photoId_userId: {
+    userId: loggedInUser.id,
+    photoId: id,
+    },
+    }; <- 이부분에서 사용가능!!
+    @@unique([photoId, userId])
+    where: photoId_userId 이렇게됨!
+
+43. --------------햇깔리는부분!!!!!!!!!!!!!!!!!
+    include는 User나 Photo속에 다른 테이블이 있을때 .. 예를들어 User속 Photo
+    가있다면.. 유저를 사용하는 쿼리나 뮤테이션에서 이 Photo 내용을 보고싶다면 user.resolver에 추가하거나 User를 사용하는 쿼리나 뮤테이션에 include를 통해 relation을 추가해줘야한다.. 왜냐하면 DB에 직접 저장을 안하고 서브 테이블에 레퍼런스 형식으로만 연결되어있기에.. 그리고 select를 통해 내가 원하는 정보만 가져올수있음.. 예를 들어 photo의 caption만 가지고 오고 싶은데 include photo해버리면 그 photo와 관련된 모든 정보들이 다 따라온다.. 비효율적임..
+    그래서 include :{photo:{select:{caption:true}} <- 이런식으로 해주면 된다!@!
+
+44. include와 select차이점.. include는 결과에 relationship을 추가해주는것이고
+    select는 말그대로 뭘 받을지 데이터 선택하는것임.
+    즉 포토에서 바로 셀렉트 쓰면 포토의 요소들중 셀렉된 친구들만 가져오는거고(심지어 user셀렉해도 user내용이 바로옴!)
+    포토에서 인클루드!!! user뒤 유저안에서 select하면 1. 포토내용!! + 2. 유저(+유저안에서 셀렉된 친구들만 데이터가 전송된다!) 추가되어옴..
+    공통점은 select include둘다 레퍼런스 이용해 테이블속안의 다른테이블 관계를 가져올수있음! notion프리즈마에 입력해놨음 증거들..
+
+45. npm i aws-sdk
+    aws이용한 파일저장!
+
+    1. IAM 생성후 키 저장해두기..
+    2. S3가서 bucket만들기!
+    3. 버킷과 파일의 이름을 명시하고, 파일을 보내면됨
+    4. npm install graphql-upload@latest
+    5. server.js에 import { graphqlUploadExpress } from 'graphql-upload';추가
+    6. 추가된거 몇개있음server.js 확인.. 그리고
+    7. shared.typeDefs.js
+       export default gql
+       scalar Upload // 추가
+    8. shared.resolvers.js
+       import { GraphQLUpload } from 'graphql-upload'; // 추가
+       Upload: GraphQLUpload, 추가함
+    9. 중요!! 파일보낼때 이름을 폴더이름추가하면 폴더별로 묶여서 저장됨!!!
+       ex) uploads/ avatar/
+
+46. 뮤테이션에서 User의 avatar나 photo의 file은 Upload형식으로 타입을 받지만
+    전체 그래프큐엘이나 프리즈마 테이블 구성에서 User avatar나 avatar와 photo의 file 은 String을로 URL이 다르다..
+    파일 을 업로드할때 형식은 upload로 받고 url로 리턴한걸 저장하기떄문!

@@ -3,6 +3,7 @@ import { createWriteStream } from "fs";
 import bcrypt from "bcrypt";
 import client from "../../client";
 import { protectedResolver } from "../users.utils";
+import { uploadToS3 } from "../../shared/shared.utils";
 
 console.log(process.cwd());
 
@@ -23,27 +24,29 @@ const resolverFn = async (
 
     let avatarUrl = null;
     if (avatar) {
-      const { filename, createReadStream } = await avatar;
-      const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
-      // 파일 이름이 같을수있으니 중복방지를 위해 이름을 유니크하게 해주자
+      avatarUrl = await uploadToS3(avatar, loggedInUser.id, "avatars");
 
-      const readStream = createReadStream();
-      //createReadStream은 nodejs에서 온 함수임!
-      //파일 받으면 저절로 안에 포함됨.
-      //이 함수로 파일을 읽을수있음!
-      // const stream = createReadStream();
-      // console.log(avatar);
-      // console.log(stream);
+      // const { filename, createReadStream } = await avatar;
+      // const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
+      // // 파일 이름이 같을수있으니 중복방지를 위해 이름을 유니크하게 해주자
 
-      const writeStream = createWriteStream(
-        //경로를 알려줘서 uploads폴더에 저장하고싶다..aws쓰기전에..
-        // process.cwd() 이건.. 현재 이파일이 있는 경로를 알려준다!
-        //ex)C:\Users\818396\Desktop\my_project\Nproject\NewKwangStagram
-        //즉 절대 경로로 써줘야한다. filename은 내가 저장한 파일 이름
-        process.cwd() + "/uploads/" + newFilename
-      );
-      readStream.pipe(writeStream);
-      avatarUrl = `http://localhost:4000/static/${newFilename}`;
+      // const readStream = createReadStream();
+      // //createReadStream은 nodejs에서 온 함수임!
+      // //파일 받으면 저절로 안에 포함됨.
+      // //이 함수로 파일을 읽을수있음!
+      // // const stream = createReadStream();
+      // // console.log(avatar);
+      // // console.log(stream);
+
+      // const writeStream = createWriteStream(
+      //   //경로를 알려줘서 uploads폴더에 저장하고싶다..aws쓰기전에..
+      //   // process.cwd() 이건.. 현재 이파일이 있는 경로를 알려준다!
+      //   //ex)C:\Users\818396\Desktop\my_project\Nproject\NewKwangStagram
+      //   //즉 절대 경로로 써줘야한다. filename은 내가 저장한 파일 이름
+      //   process.cwd() + "/uploads/" + newFilename
+      // );
+      // readStream.pipe(writeStream);
+      // avatarUrl = `http://localhost:4000/static/${newFilename}`;
     }
 
     //읽어온 파일을 파이프(그대로 write로 보내줌)를 써서 write를 통해 저장함

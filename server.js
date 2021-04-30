@@ -1,6 +1,8 @@
 require("dotenv").config();
 // import dotenv from "dotenv"
 // dotenv.config() require로 한줄을 만든것임!
+//이것때문에 전파일에서 process.env. 사용가능
+import { graphqlUploadExpress } from "graphql-upload";
 import { getUser } from "./users/users.utils";
 import express from "express";
 import logger from "morgan";
@@ -14,6 +16,9 @@ const PORT = process.env.PORT;
 const apollo = new ApolloServer({
   resolvers,
   typeDefs,
+  uploads: false,
+  //현재 upload가 버그가 많아 여기꺼 해제시키고 최신
+  //import { graphqlUploadExpress } from 'graphql-upload'; 을 쓸것임
   // schema, 파일업로드위해..resolver와 typeDefs로 나눠줌..readme설명있음
   context: async ({ req }) => {
     return {
@@ -27,6 +32,9 @@ const apollo = new ApolloServer({
 });
 
 const app = express();
+app.use(graphqlUploadExpress());
+//최신버전 업로드 진행
+
 app.use(logger("tiny")); //매 시간마다 로그 찍히게 해줌..
 //이밑에 applyMiddleware해줘여함
 

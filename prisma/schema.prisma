@@ -11,19 +11,21 @@ generator client {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   firstName String
   lastName  String?
-  username  String   @unique
-  email     String   @unique
+  username  String    @unique
+  email     String    @unique
   password  String
   bio       String?
   avatar    String?
   photos    Photo[]
-  followers User[]   @relation("FollowRelation", references: [id])
-  following User[]   @relation("FollowRelation", references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  likes     Like[]
+  comments  Comment[]
+  followers User[]    @relation("FollowRelation", references: [id])
+  following User[]    @relation("FollowRelation", references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Photo {
@@ -37,6 +39,8 @@ model Photo {
   caption   String?
   hashtags  Hashtag[]
   //헤쉬와 포토는 many to many 관계를 가진다!
+  likes     Like[]
+  comments  Comment[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -47,4 +51,33 @@ model Hashtag {
   photos    Photo[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  photo     Photo    @relation(fields: [photoId], references: [id])
+  //like테이블의 필드 photo(실제존재x)는 photoId가 실제photo의 아이디를가진다
+  user      User     @relation(fields: [userId], references: [id])
+  photoId   Int
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //photoId와 UserId는 유닉크 해야함.. 한포토에 같은사람이 두번 좋아요못하기에
+  //photoId가 유닉이라는건.. like부분에 하나의 포토 아이디를 가지는 거지만
+  //  @@unique([photoId, userId]) 이건 두개가 하나의 유니크 키가 된다 보면됨!
+  //ex photoId:1 userId:1 => 11, photoId:1 userId:2 => 12
+  //그래서 11, 12만 안겹치면 생성된다!
+  @@unique([photoId, userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  photo     Photo    @relation(fields: [photoId], references: [id])
+  payload   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  photoId   Int
 }

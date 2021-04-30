@@ -1,5 +1,7 @@
 import { protectedResolver } from "../../users/users.utils";
 import client from "../../client";
+import { processHashtags } from "../photos.utils";
+import { uploadToS3 } from "../../shared/shared.utils";
 
 export default {
   Mutation: {
@@ -13,19 +15,18 @@ export default {
           const hashtags = caption.match(/#[\w]+/g);
           // console.log(hashtags);
           if (hashtags) {
-            hashtagObj = hashtags.map((hashtag) => ({
-              where: { hashtag },
-              create: { hashtag },
-            }));
+            hashtagObj = processHashtags(caption);
           }
 
           //where: { hashtag }, create: { hashtag } 가진 배열을 만들어줄것임
         }
+        const fileUrl = await uploadToS3(file, loggedInUser.id, "uploads");
+
         // save the photo WITH the parsed hashtags
         // add the photo to the hashtags
         return client.photo.create({
           data: {
-            file,
+            file: fileUrl,
             caption,
             // hashtags: {
             //   connectOrCreate: [
