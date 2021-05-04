@@ -299,3 +299,29 @@ followers User[] @relation("FollowRelation", references: [id])
 46. 뮤테이션에서 User의 avatar나 photo의 file은 Upload형식으로 타입을 받지만
     전체 그래프큐엘이나 프리즈마 테이블 구성에서 User avatar나 avatar와 photo의 file 은 String을로 URL이 다르다..
     파일 을 업로드할때 형식은 upload로 받고 url로 리턴한걸 저장하기떄문!
+
+47. One to Many 관계에서,, ex)하나의 메세지는 하나의 방과 유저를 가지는데
+    여기서 user room은 각각 userId와 roomId은 @relation(fields: [userId], references: [id]) 이런게 필요함.. 그러나 user와 room은 많은 메시지를 가지므로 room Room[] 이렇게 해주면 된다.many to many는 서로 room Room[]
+    user User[] 해주면됨..
+
+48. 안읽은 메시지 확인.. read가 false인것중에 내꺼 제외하고 갯수를 구하면된다
+
+49. 업데이트는 유니크한 값만 가져와서 update가능!
+
+50. 실시간에서 payload..업데이트 내용은 object여야한다!
+    ex) pubsub.publish(NEW_MESSAGE, { roomUpdates: { ...message } });
+    즉 두번쨰 전송내용에는 subscription 이름 들어가고!! 두번째는 리턴값이 들어간다
+    저기에서는
+    type Subscription {
+    roomUpdates: Message
+    } <-- 이부분을 우리가 업데이트 한것임!
+    { roomUpdates: { message }}이렇게하면 오브젝트속 오브젝트가 들어가버림
+    우리는 오브젝트 하나만 들어가야함.. 그래서 풀어서 새로운 오브젝트에 내용만넣음
+
+    이렇게하면안됨
+    ex) pubsub.publish(NEW_MESSAGE, {message } );
+    roomUpdates Resolver에 많은 내용이있음!
+
+51. server에서의 onConnect는 user가 연결되었을때 사람들이 뭔가를 할 수 있도록  
+    해주는 기능임. onConnect에서 리턴하면 아폴로의 context로 갈것임!
+    server의 context부분과 subscription부분에 자세히 설명해놨음 7.12
