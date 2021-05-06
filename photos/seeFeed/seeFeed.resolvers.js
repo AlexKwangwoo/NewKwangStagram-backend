@@ -8,6 +8,7 @@ export default {
         where: {
           OR: [
             //둘중 하나의 조건이라도 만족되는 사진들을 가져온다
+            //1. 내가 팔로우 하는사람의 사진
             {
               user: {
                 followers: {
@@ -19,7 +20,7 @@ export default {
             },
             {
               userId: loggedInUser.id,
-              // 내자신이 올린것도 피드에서 볼수있음!
+              // 2.내자신이 올린것도 피드에서 볼수있음!
             },
           ],
         },
