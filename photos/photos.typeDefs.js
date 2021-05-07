@@ -9,10 +9,12 @@ export default gql`
     hashtags: [Hashtag]
     # likes와 comments는 갯수이다!
     likes: Int!
-    comments: Int!
+    commentNumber: Int!
+    comments: [Comment]
     createdAt: String!
     updatedAt: String!
     isMine: Boolean!
+    isLiked: Boolean!
   }
 
   type Hashtag {

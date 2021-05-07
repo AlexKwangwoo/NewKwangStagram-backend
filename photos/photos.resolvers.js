@@ -24,12 +24,49 @@ export default {
       }),
     //여기서 id는 photoID이고 userid는 포토주인의 아이디이다
     likes: ({ id }) => client.like.count({ where: { photoId: id } }),
-    comments: ({ id }) => client.comment.count({ where: { photoId: id } }),
+
+    commentNumber: ({ id }) => client.comment.count({ where: { photoId: id } }),
+    comments: ({ id }) =>
+      client.comment.findMany({
+        where: { photoId: id },
+        include: { user: true },
+        //frontend에서
+        // comments{
+        // user {
+        //   username
+        //   avatar
+        // } }<=seeFeed에 있기에 추가해줘야한다!
+      }),
+    // comments: ({ id }) =>
+    // client.photo
+    //   .findUnique({ where: { id } })
+    //   .comments({ include: { user: true } }),
+
     isMine: ({ userId }, _, { loggedInUser }) => {
       if (!loggedInUser) {
         return false;
       }
       return userId === loggedInUser.id;
+    },
+    isLiked: async ({ id }, _, { loggedInUser }) => {
+      if (!loggedInUser) {
+        return false;
+      }
+      const ok = await client.like.findUnique({
+        where: {
+          photoId_userId: {
+            photoId: id,
+            userId: loggedInUser.id,
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (ok) {
+        return true;
+      }
+      return false;
     },
   },
 

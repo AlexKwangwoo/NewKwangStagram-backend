@@ -325,3 +325,5 @@ followers User[] @relation("FollowRelation", references: [id])
 51. server에서의 onConnect는 user가 연결되었을때 사람들이 뭔가를 할 수 있도록  
     해주는 기능임. onConnect에서 리턴하면 아폴로의 context로 갈것임!
     server의 context부분과 subscription부분에 자세히 설명해놨음 7.12
+
+52. 댓글에서 해쉬테그 누를수있게 해주기
