@@ -369,3 +369,8 @@ followers User[] @relation("FollowRelation", references: [id])
     - git add .
     - git commit -am "First Publish"
     - git push heroku master 해주면됨!
+    - 헤로쿠는 알아서 build 이름의 커맨드를 가지고 동작할것임
+    - 모듈을 찾을수없다고 heroku logs --tail 해서 발견되면
+    - dependencies 에 추가해주면됨.. 그리고 npm i 다시해주면됨
+    - https://newkwangstagram-backend.herokuapp.com/graphql 그래프큐엘 가서 get query missing뜨면
+      제대로 작동한다는것임

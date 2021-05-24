@@ -18,6 +18,8 @@ const PORT = process.env.PORT;
 const apollo = new ApolloServer({
   resolvers,
   typeDefs,
+  playground: ture,
+  //이걸 false하면 배포시 ~~/graphql 주소로 이동못함.. 근데 배포시엔 막아야 다른사람 접근막을수있음
   uploads: false,
   //현재 upload가 버그가 많아 여기꺼 해제시키고 최신
   //import { graphqlUploadExpress } from 'graphql-upload'; 을 쓸것임
