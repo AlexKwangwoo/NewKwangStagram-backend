@@ -7,6 +7,8 @@ export default {
         where: {
           photoId: id,
         },
+        // where: 어떤 포토인지를 가서!!! 포토안의 user내용만 뽑아오겠음// 사진 정보도
+        //얻어 오고 싶다면 include하던가 select에 user photo 둘다 해줘야함~!
         select: {
           user: true,
         },

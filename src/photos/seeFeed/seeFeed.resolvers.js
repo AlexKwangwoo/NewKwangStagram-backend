@@ -3,8 +3,11 @@ import { protectedResolver } from "../../users/users.utils";
 
 export default {
   Query: {
-    seeFeed: protectedResolver((_, __, { loggedInUser }) =>
+    seeFeed: protectedResolver((_, { offset }, { loggedInUser }) =>
       client.photo.findMany({
+        take: 4,
+        skip: offset,
+        // offset 만큼 스킵할것임!! 가져오는건 매번 2장씩만..
         where: {
           OR: [
             //둘중 하나의 조건이라도 만족되는 사진들을 가져온다

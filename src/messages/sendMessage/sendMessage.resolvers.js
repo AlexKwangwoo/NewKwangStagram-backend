@@ -81,6 +81,7 @@ export default {
         // 여기서 실시간을 트리거 함.. 메시지 생성될때.. 리스닝하는친구에게 정보줌
         //그리고 중요!! 리턴type이 똑같아야함 roomUpdates.typeDefs에서 정의한것이랑!!!!
         return {
+          id: message.id,
           ok: true,
         };
       }

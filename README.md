@@ -1,3 +1,10 @@
+디비열기 npm run dev
+
+개발할때
+npx run studio
+npm run migrate
+가상안드로이드 키면 studio가 안됨.. 그리고 새로고침해도 안됨.
+
 중요중요.
 디비 관계를 만들때..
 .1.Photo와 User의 경우 (one to many)
@@ -39,8 +46,8 @@ followers User[] @relation("FollowRelation", references: [id])
 
 6.  npm install prisma -D, npx prisma init, 권한없다하면..
     npm cache clean --force!!
-    (prisma는 orm으로 SQL을 자바스크립트 코드로 작성할수있게 도와줌!)
-    (DATABASE_URL="postgresql://???:^^@localhost:5432/%%%?schema=public" 저기서 postgres를 포스트그래스 ??? 쓰는 owner이름 %%%은 디비이름, ^^ 비밀번호)
+    (prisma(광디쉬의typeORM과같은기능)는 orm으로 SQL을 자바스크립트 코드로 작성할수있게 도와줌!)
+    (DATABASE_URL="postgresql://???:^^@localhost:5432/%%%?schema=public" 저기서 postgres를 포스트그래스 ???부분은 사용하는 owner의이름 %%%은 디비이름, ^^ 비밀번호)
     (dev로 실행시켜줬기에 Client를 자동적으로 만들어줌)
     "prisma": "prisma" 를 package json에 써줘야 이전버전이랑 안겹쳐짐!
     !!!프리즈마는 default가 모든게 필수여서.. nullable할꺼면 ? 해줘야하고
@@ -50,9 +57,10 @@ followers User[] @relation("FollowRelation", references: [id])
     (migration... 테스트 데이터베이스 사용할때 해야함!)
 
     -------여기까지 중요한건.. typeDefs의 테이블ex)movie와
-    schema.prisma의 model movie을 같게만들어야함 또함..
+    schema.prisma의 model movie을 같게만들어야함 또한..
     typeDefs을 쿼리와 뮤테이션을 리졸버와 동기화시켜야함!!
     그러면 migrate할때 알아서 CREATE TABLE해줌..
+    --> 차후 쿼리 뮤테이션 통합하여 한 파일로 다 모을꺼임..
 
 8.  npx prisma studio
 
@@ -62,7 +70,7 @@ followers User[] @relation("FollowRelation", references: [id])
     스키마 파일에서 typeDefs 와 리졸버,쿼리를 다햅해서 서버로 보내준다!
 
 10. npm i dotenv
-    가상환경을 설정해야함. 가상환경의 우리의 환경변수를 읽을 수 있도록 하기위해서..
+    가상환경설정을 설정해야함. 가상환경의 우리의 환경변수를 읽을 수 있도록 하기위해서..
     dotenv를 app의 모든것의 맨위에서 즉시 실행시켜야함! <- 그의미는 server.js에서
     실행을 시켜야한다! //dotenv를 가져와서 실행 시켜줘야함!
     require("dotenv").config();
@@ -277,6 +285,8 @@ followers User[] @relation("FollowRelation", references: [id])
     즉 포토에서 바로 셀렉트 쓰면 포토의 요소들중 셀렉된 친구들만 가져오는거고(심지어 user셀렉해도 user내용이 바로옴!)
     포토에서 인클루드!!! user뒤 유저안에서 select하면 1. 포토내용!! + 2. 유저(+유저안에서 셀렉된 친구들만 데이터가 전송된다!) 추가되어옴..
     공통점은 select include둘다 레퍼런스 이용해 테이블속안의 다른테이블 관계를 가져올수있음! notion프리즈마에 입력해놨음 증거들..
+    // where: 어떤 포토인지를 가서!!! 포토안의 user내용만 뽑아오겠음// 사진 정보도
+    //얻어 오고 싶다면 include하던가 select에 user photo 둘다 해줘야함~!
 
 45. npm i aws-sdk
     aws이용한 파일저장!
@@ -327,3 +337,35 @@ followers User[] @relation("FollowRelation", references: [id])
     server의 context부분과 subscription부분에 자세히 설명해놨음 7.12
 
 52. 댓글에서 해쉬테그 누를수있게 해주기
+
+53. seeFeed에서 모바일할때 2개를 보고 스킵갯수는 seeFeed데이터길이 만큼 offset으로 설정하여
+    페이지 내릴때마다 건너뛰어서 사진을 받을수있음..
+
+54. 배포를 위해 더 해줘야함! (기존바벨을 쓰면 안됨!)
+
+    - babel CLI를 사용할것임 이것은 바벨을 package.json으로부터 실행할 수 있도록 만들어주는 녀석임
+    - npm i @babel/cli --dev-only
+    - 보통사람들이 cli바벨 쓸때 모든폴더를 가져오라고 하는데
+    - 그다음 실행시킬 여러파일들 client, constants pubsub schema server comments photos등
+      파일들을 src로 옮겨줌
+    - package json 고쳐줌! "dev": "nodemon --exec babel-node src/server --delay 2",
+    - "build": "babel src --out-dir build", <-얘는 babel cli를 호출할것임(색시js코드로 바꿔줌)
+      --out-dir build는 build의 출력디렉토리정한다는 뜻힘 ->이걸통해 모든 브라우저가 이해하는 js로 바꿔줌
+      "start": "node build/server" 추가! <-위에 친구들이 작동되는지 테스트 해봐야함!
+    - regeneratorRuntime 오류가 생김, 이친구는 기본적으로 async functions를 작동할수있게 허락하는
+      녀석임<- async function이 작동안되기에 바로밑에 친구를 설치해야함
+    - 바벨은 plugin을 가지는데 그 클러그인이 우리가 사용할수있게 regenerator을 코드로 가져와줌
+      (무슨말이냐면 바벨을 위한 유용한 code helopers 를 포함시켜준다는것임!)
+      npm install --save-dev @babel/plugin-transform-runtime
+      이친구를 설정을 해줘야한다
+      "plugins": ["@babel/plugin-transform-runtime"] 이걸! babel.config에
+      넣기만 하면됨!
+    - 만들어진build 폴더를 삭제하고 다시 npm run build 해주면됨
+    - 이제 npm start로 build폴더를 통해 만들어진 서버를 작동시켜보자,,
+    - git ignore에 /build 추가!
+
+55. 헤로쿠 로그인지 bash로 안하면 에러뜸..
+    로그인되면 그다음 heroku git:remote -a newkwangstagram-backend 입력! 헤로쿠 내어플에있음!
+    - git add .
+    - git commit -am "First Publish"
+    - git push heroku master 해주면됨!

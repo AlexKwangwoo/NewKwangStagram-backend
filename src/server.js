@@ -22,7 +22,10 @@ const apollo = new ApolloServer({
   //현재 upload가 버그가 많아 여기꺼 해제시키고 최신
   //import { graphqlUploadExpress } from 'graphql-upload'; 을 쓸것임
   // schema, 파일업로드위해..resolver와 typeDefs로 나눠줌..readme설명있음
+  // app.use(graphqlUploadExpress());
   context: async (ctx) => {
+    // ctx 에 req있으면 쿼리나 뮤테이션 connection있으면 소켓을쓴거
+
     //이부분 중요!!!!!!!!!!!!!!!!!!!
     //context는 mutation query subscribe 발생시 항상 발동됨.
     // header또는 connection을 포함하진않고!!!!! 같이!! 인자로 header와

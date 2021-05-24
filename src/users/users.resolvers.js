@@ -5,10 +5,15 @@ export default {
   // 거친후 값이 반환된다
   User: {
     //여기도 하나의 리졸버라고 생각하자!!
-    totalFollowing: ({ id }) =>
+    totalFollowing: async (props) => {
+      const id = props.id;
+      console.log("propsprops", props);
+      // 중요 props는 지금 로그인된 사람의 모든정보를 가져옴!!
+
       //root는 request된 User이다.. ex)seeProfile
       //반환값이 User여야만 한다..
-      client.user.count({
+      // const totalUser = null;
+      const totalUser = await client.user.count({
         //다른사람들중 id팔로워를 가지고 있는사람들의 수를 셀것임
         //그것지 즉 id사람이 팔로워하는사람들 수가 될것이기에
         where: {
@@ -18,7 +23,9 @@ export default {
             },
           },
         },
-      }),
+      });
+      return totalUser;
+    },
 
     totalFollowers: ({ id }) =>
       client.user.count({

@@ -39,6 +39,7 @@ export function protectedResolver(ourResolver) {
   //protectedResolver 가 ourResolver함수를 인자로 받고 그 인자들을 이용해
   // 마지막 => {내용} 내용을 실행시킬것임!
   return function (root, args, context, info) {
+    //ourResolver는 위의4개의 인자가 들어있는 함수가올것임
     //처음으로 4개의 인자를 받아서 이부분이 실행될것임!!
     //info는 우리의 부모친구가 어떤 정보를 가졌는지 알수있음..
 
