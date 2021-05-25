@@ -2,7 +2,7 @@
 
 개발할때
 npx run studio
-npm run migrate
+npm run migrate 을 통해 schema.prisma 바뀌면 바꿔줘야함!
 가상안드로이드 키면 studio가 안됨.. 그리고 새로고침해도 안됨.
 
 중요중요.
@@ -382,3 +382,10 @@ followers User[] @relation("FollowRelation", references: [id])
     - 그리고 헤로쿠 overview로 가서 configure Add-ons를 해줘야함 (디비 연결을해야함)
     - 가서 heroku postgre를 설정함! 무료를 설정함!
     - 그러면 config Vars 해로쿠에서 저절로 database url이 설정된걸 볼수있음!
+    - 실제 개발이 끝날떄는 playground: true, introspection: true, 두개 지워준다
+    - 만들어진 디비를 migrate를 통해 우리가만든 db 로 테이블 추가해야함!
+    - 그리고 Procfile을 만들어줘서 똑같이 해줘야함!
+      이게 뭐냐면 배포시 프로그램 실행할때 미리 실행해줄수있는 명령어임!
+      release: npx prisma migrate deploy을 먼저 진행하고 npm start하겠음!
+      web: npm start
+    -
