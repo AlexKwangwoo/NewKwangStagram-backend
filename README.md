@@ -373,4 +373,12 @@ followers User[] @relation("FollowRelation", references: [id])
     - 모듈을 찾을수없다고 heroku logs --tail 해서 발견되면
     - dependencies 에 추가해주면됨.. 그리고 npm i 다시해주면됨
     - https://newkwangstagram-backend.herokuapp.com/graphql 그래프큐엘 가서 get query missing뜨면
-      제대로 작동한다는것임
+      제대로 작동한다는것임..
+    - playground: true, 를 해줘야함 server.js가서!
+    - 그래프큐엘이 docs와 schema에 접근 할수있도록 introspection: true 설정도 해줘야한다
+      server.js에서 해줘야함
+    - 그리고 나서 heroku 환경변수 세팅을 해줘야한다!
+    - ex)SECRET_KEY, AWS_KEY, AWS_SECRET
+    - 그리고 헤로쿠 overview로 가서 configure Add-ons를 해줘야함 (디비 연결을해야함)
+    - 가서 heroku postgre를 설정함! 무료를 설정함!
+    - 그러면 config Vars 해로쿠에서 저절로 database url이 설정된걸 볼수있음!
