@@ -387,5 +387,5 @@ followers User[] @relation("FollowRelation", references: [id])
     - 그리고 Procfile을 만들어줘서 똑같이 해줘야함!
       이게 뭐냐면 배포시 프로그램 실행할때 미리 실행해줄수있는 명령어임!
       release: npx prisma migrate deploy을 먼저 진행하고 npm start하겠음!
-      web: npm start
+      web: npm start ...
     -
