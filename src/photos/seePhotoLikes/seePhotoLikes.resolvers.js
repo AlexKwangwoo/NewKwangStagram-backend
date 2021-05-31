@@ -13,7 +13,7 @@ export default {
           user: true,
         },
       });
-      console.log(likes);
+      // console.log(likes);
       // const a = likes.map((like) => like.user);
       // console.log("aaaaaaaaaaa", a);
       return likes.map((like) => like.user);

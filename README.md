@@ -116,7 +116,7 @@ followers User[] @relation("FollowRelation", references: [id])
     { firstName, lastName, username, email, password: newPassword }
     )
 
-17. 중요!! 그래프 큐엘의 뮤테이션, 쿼리 형식을보면
+17. 중요!!!!!!! 그래프 큐엘의 뮤테이션, 쿼리 형식을보면
     ex)
     Mutation: {
     editProfile: async (
@@ -124,7 +124,9 @@ followers User[] @relation("FollowRelation", references: [id])
     { firstName, lastName, username, email, password: newPassword },
     context,
     info
-    )
+    ) 두번째 값은 변수로 오는것들.. 세번째는 context이용..예를들어 로그인된사람누구?
+    네번째는 info
+
     인데.. 우리가 header에 토큰을 포함한뒤 => 아폴로 context에 포함시켜.. 전역에서 뮤테이션이나 쿼리를 사용할때 3번째 인자(context를 위한)를 뽑아서 사용하면된다! 이 컨택스트는
     server.js의 apollo server의 context에서 관리 되며 함수형식또는 오브젝트 형식이 될수있다!
 
@@ -366,6 +368,7 @@ followers User[] @relation("FollowRelation", references: [id])
 
 55. 헤로쿠 로그인지 bash로 안하면 에러뜸..
     로그인되면 그다음 heroku git:remote -a newkwangstagram-backend 입력! 헤로쿠 내어플에있음!
+
     - git add .
     - git commit -am "First Publish"
     - git push heroku master 해주면됨!
@@ -386,6 +389,12 @@ followers User[] @relation("FollowRelation", references: [id])
     - 만들어진 디비를 migrate를 통해 우리가만든 db 로 테이블 추가해야함!
     - 그리고 Procfile을 만들어줘서 똑같이 해줘야함!
       이게 뭐냐면 배포시 프로그램 실행할때 미리 실행해줄수있는 명령어임!
-      release: npx prisma migrate deploy을 먼저 진행하고 npm start하겠음!
+      release: npx prisma migrate deploy을 먼저 진행하고 npm start하겠음! 이걸통해 migrate함!
       web: npm start ...
-    -
+
+    - 다시 업데이트 배포하기 위해선
+    - bash 터미널로 가서!!
+    - heroku login한뒤!
+    - git add .
+    - git commit -am "First Publish"
+    - git push heroku master 해주면됨!
