@@ -44,7 +44,10 @@ followers User[] @relation("FollowRelation", references: [id])
     (npm run dev로 바벨을 실행하기위해.. 기본적으로 콘솔에서 js파일을 실행함!)
     ("dev": "nodemon --exec babel-node server"에서 nodemon은 babel-node를 통해 server.js 파일을 실행하는것임!)
 
-6.  npm install prisma -D, npx prisma init, 권한없다하면..
+6.  중요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    새로운 디비를 위해서는.. postgreSQL에 디비 추가한뒤
+    프리즈마생성위해서는 npx prisma init 해야함!
+    npm install prisma -D, npx prisma init, 권한없다하면..
     npm cache clean --force!!
     (prisma(광디쉬의typeORM과같은기능)는 orm으로 SQL을 자바스크립트 코드로 작성할수있게 도와줌!)
     (DATABASE_URL="postgresql://???:^^@localhost:5432/%%%?schema=public" 저기서 postgres를 포스트그래스 ???부분은 사용하는 owner의이름 %%%은 디비이름, ^^ 비밀번호)
@@ -343,7 +346,18 @@ followers User[] @relation("FollowRelation", references: [id])
 53. seeFeed에서 모바일할때 2개를 보고 스킵갯수는 seeFeed데이터길이 만큼 offset으로 설정하여
     페이지 내릴때마다 건너뛰어서 사진을 받을수있음..
 
-54. 배포를 위해 더 해줘야함! (기존바벨을 쓰면 안됨!)
+54. 중요!!!!!!!!!!!!!!(1). User resolvers가면 photos: ({ id }) => client.user.findUnique({ where: {
+    id } }).photos(),
+    가있는데.. photos는 user Type에서 정의해준것임. photo 로 가면 안됨 그이유는 photos로 정의했기에
+    그리고 users의 resolvers에서 ex photos:({id})라 되어잇는데 이때 id는 user테이블에서
+    지금 유저의 id 를 가리키는것이고 즉 테이블 안에 있는 하나하나의 행들이 props가 된다
+    totalFollowing: async (props) => {
+    const id = props.id;
+    console.log("propsprops", props);
+    // 중요 props는 지금 로그인된 사람의 모든정보를 가져옴!!
+    // props.email 지금 로그인된사람의 유저이메일 가져옴
+
+55. 배포를 위해 더 해줘야함! (기존바벨을 쓰면 안됨!)
 
     - babel CLI를 사용할것임 이것은 바벨을 package.json으로부터 실행할 수 있도록 만들어주는 녀석임
     - npm i @babel/cli --dev-only
@@ -366,8 +380,10 @@ followers User[] @relation("FollowRelation", references: [id])
     - 이제 npm start로 build폴더를 통해 만들어진 서버를 작동시켜보자,,
     - git ignore에 /build 추가!
 
-55. 헤로쿠 로그인지 bash로 안하면 에러뜸..
-    로그인되면 그다음 heroku git:remote -a newkwangstagram-backend 입력! 헤로쿠 내어플에있음!
+56. 헤로쿠 로그인지 bash로 안하면 에러뜸..
+
+    - heroku login
+      로그인되면 그다음 heroku git:remote -a newkwangstagram-backend 입력! 헤로쿠 내어플에있음!
 
     - git add .
     - git commit -am "First Publish"
