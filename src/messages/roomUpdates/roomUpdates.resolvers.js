@@ -14,6 +14,10 @@ export default {
         //리턴을 해야함을 알게됨.. 그래서 (root, args, context, info)
         //써주고 마지막부분에서 (root, args, context, info) 써줌..
         //protected resovler랑 비슷함.. 이렇게 안해주면 우리는 에러뜰껏임
+        console.log("room확인", room);
+        console.log("args.id", args.id);
+        console.log("context.loggedInUser.id", context.loggedInUser.id);
+        console.log("context.loggedInUser.id", context.loggedInUser.username);
         const room = await client.room.findFirst({
           // const room = await client.room.findUnique({
           //위에처럼 못함..user는 유니크가 아니기에
