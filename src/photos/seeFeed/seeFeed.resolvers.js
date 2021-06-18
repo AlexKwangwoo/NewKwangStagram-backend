@@ -39,7 +39,7 @@ export default {
   Query: {
     seeFeed: protectedResolver((_, { offset }, { loggedInUser }) =>
       client.photo.findMany({
-        take: 8,
+        take: 15,
         skip: offset,
         // offset 만큼 스킵할것임!! 가져오는건 매번 4장씩만..
         orderBy: {

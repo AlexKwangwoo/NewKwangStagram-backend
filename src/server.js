@@ -10,6 +10,7 @@ import { ApolloServer } from "apollo-server-express";
 //import { ApolloServer } from "apollo-server"; 아폴로서버 익스프레스로바뀜
 import { typeDefs, resolvers } from "./schema";
 import http from "http";
+
 // import pubsub from "./pubsub";
 
 const PORT = process.env.PORT;

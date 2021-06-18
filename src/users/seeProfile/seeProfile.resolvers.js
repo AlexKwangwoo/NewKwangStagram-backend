@@ -16,6 +16,11 @@ export default {
           //만약 팔로잉이 1억명이면..?
 
           followers: true,
+          // photos: {
+          //   orderBy: {
+          //     id: "asc",
+          //   },
+          // },
         },
       }),
   },

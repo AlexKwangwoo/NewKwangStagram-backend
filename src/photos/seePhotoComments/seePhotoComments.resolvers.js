@@ -7,6 +7,9 @@ export default {
         where: {
           photoId: id,
         },
+        include: {
+          user: true,
+        },
         // take, skip or cursor
         orderBy: {
           createdAt: "asc",
